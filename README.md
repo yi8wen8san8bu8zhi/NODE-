@@ -9,3 +9,6 @@ node app.js
 
 ## examine
 http://localhost
+
+# my blogs
+http://onediv.top/

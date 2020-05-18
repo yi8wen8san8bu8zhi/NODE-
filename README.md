@@ -10,5 +10,5 @@ node app.js
 ## examine
 http://localhost
 
-# my blogs
+# Blog
 http://onediv.top/

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+    <input type="file" id="file">
+    <input type="button" value="上传" onclick="upload(0)">
+</body>
+<script>
+    let btnfile = document.querySelector('#file') 
+    // 设置上传文件切片大小
+    let chunkSize = 1024* 1024
+    // index:第几个区块
+    function upload(index) {
+        // 获取文件上传表单
+        let file = btnfile.files[0]
+        let [fname,fext] = file.name.split('.')
+         
+        let start = index* chunkSize
+        // 当区块没有内容,停止上传
+        if(start>file.size){
+            merge(file.name)
+            return
+        }
+        // 获取区块的内容
+        let blob = file.slice(start,start+chunkSize)
+        // 区块命名:原文件名,区块索引,文件类型
+        let blobName= `${fname}.${index}.${fext}`
+        // 区块内容转成file文件
+        let blobFile = new File([blob],blobName)
+        // 构建form对象
+        let formdate = new FormData()
+        formdate.append('file', blobFile)
+        axios.post('/upload', formdate).then(res => {
+            console.log(res)
+            upload(++index)
+        })
+    }
+    function merge(name){
+        axios.post('/merge',{name:name}).then(res=>{
+            console.log(res)
+        })
+    }
+</script>
+
+</html>
